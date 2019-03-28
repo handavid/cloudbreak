@@ -15,13 +15,12 @@ repositories {
   maven { url "https://cloudbreak-maven.s3.amazonaws.com/releases" }
   maven { url "https://repo.spring.io/release" }
   maven { url "https://plugins.gradle.org/m2/" }
+  maven { url "https://repository.cloudera.com/artifactory/cloudera-repos" }
 }
 
 dependencies {
   implementation     group: 'com.google.code.gson',      name: 'gson'
   implementation     group: 'dnsjava',                   name: 'dnsjava'
-  implementation     group: 'io.micrometer',             name: 'micrometer-core'
-  implementation     group: 'io.micrometer',             name: 'micrometer-jersey2'
   implementation     group: 'io.micrometer',             name: 'micrometer-registry-prometheus'
   implementation     group: 'io.springfox',              name: 'springfox-swagger2'
   implementation     group: 'io.springfox',              name: 'springfox-swagger-ui'
@@ -29,6 +28,8 @@ dependencies {
     exclude group: 'org.yaml'
   }
   implementation     group: 'javax.xml.bind',            name: 'jaxb-api'
+  implementation     group: 'org.glassfish.jaxb',        name: 'jaxb-runtime',                         version: '2.3.1'
+  implementation     group: 'javax.activation',          name: 'activation',                           version: '1.1.1'
   implementation     group: 'org.glassfish.jersey.core', name: 'jersey-server'
   implementation     group: 'org.mybatis',               name: 'mybatis-migrations'
   implementation     group: 'org.postgresql',            name: 'postgresql'
@@ -37,6 +38,11 @@ dependencies {
   implementation     group: 'org.springframework.boot',  name: 'spring-boot-starter-actuator'
   implementation     group: 'org.springframework.boot',  name: 'spring-boot-starter-jersey'
   implementation     group: 'org.springframework.boot',  name: 'spring-boot-starter-data-jpa'
+  implementation     group: 'org.springframework.security.oauth', name: 'spring-security-oauth2',      version: springOauthVersion
+  implementation     group: 'io.projectreactor',         name: 'reactor-core',                         version: eventBusVersion
+  implementation     group: 'io.projectreactor',         name: 'reactor-bus',                          version: eventBusVersion
+  implementation     group: 'io.projectreactor',         name: 'reactor-stream',                       version: eventBusVersion
+  implementation     group: 'org.springframework',       name: 'spring-context-support',               version: springFrameworkVersion
   testImplementation ('org.springframework.boot:spring-boot-starter-test') {
     exclude group: 'junit'
   }
@@ -46,9 +52,7 @@ dependencies {
   constraints {
     implementation     group: 'com.google.code.gson',      name: 'gson',                           version: '2.6.2'
     implementation     group: 'dnsjava',                   name: 'dnsjava',                        version: '2.1.7'
-    implementation     group: 'io.micrometer',             name: 'micrometer-core',                version: micrometerVersion
-    implementation     group: 'io.micrometer',             name: 'micrometer-jersey2',             version: micrometerVersion
-    implementation     group: 'io.micrometer',             name: 'micrometer-registry-prometheus', version: micrometerVersion
+    implementation     group: 'io.micrometer',             name: 'micrometer-registry-prometheus', version: '1.1.2'
     implementation     group: 'io.springfox',              name: 'springfox-swagger2',             version: swagger2Version
     implementation     group: 'io.springfox',              name: 'springfox-swagger-ui',           version: swagger2Version
     implementation     group: 'io.swagger',                name: 'swagger-jersey2-jaxrs',          version: '1.5.21'
@@ -66,6 +70,15 @@ dependencies {
     testRuntime        group: 'org.junit.jupiter',         name: 'junit-jupiter-engine',           version: junitJupiterVersion
   }
 
+  implementation project(':cloud-reactor-api')
+  implementation project(':cloud-reactor')
+  runtime project(':cloud-reactor')
+  runtime project(':cloud-openstack')
+  runtime project(':cloud-gcp')
+  runtime project(':cloud-aws')
+  runtime project(':cloud-mock')
+  runtime project(':cloud-azure')
+
 }
 
 bootRun {
@@ -77,17 +90,17 @@ bootRun {
 }
 
 springBoot {
-  mainClassName = 'com.sequenceiq.datalake.DatalakeApplication'
+  mainClassName = 'com.sequenceiq.freeipa.FreeIpaApplication'
 }
 
 jar {
-  baseName = 'datalake'
-  archiveName = 'datalake.jar'
+  baseName = 'freeipa'
+  archiveName = 'freeipa.jar'
 }
 
 bootJar {
-  baseName = 'datalake'
-  archiveName = 'datalake.jar'
+  baseName = 'freeipa'
+  archiveName = 'freeipa.jar'
   manifest {
     def grgit = Grgit.open(currentDir: project.projectDir)
     attributes "Implementation-Version": grgit.describe()
