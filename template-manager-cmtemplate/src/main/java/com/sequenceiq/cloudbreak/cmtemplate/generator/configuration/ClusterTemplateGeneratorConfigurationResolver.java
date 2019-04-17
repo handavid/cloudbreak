@@ -25,15 +25,17 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sequenceiq.cloudbreak.cmtemplate.generator.configuration.domain.StackVersion;
 import com.sequenceiq.cloudbreak.cmtemplate.generator.configuration.domain.dependencies.ServiceConfig;
 import com.sequenceiq.cloudbreak.cmtemplate.generator.configuration.domain.dependencies.ServiceDependecies;
 import com.sequenceiq.cloudbreak.cmtemplate.generator.configuration.domain.versionmatrix.ServiceList;
-import com.sequenceiq.cloudbreak.cmtemplate.generator.configuration.domain.StackVersion;
 
 @Service
 public class ClusterTemplateGeneratorConfigurationResolver implements ResourceLoaderAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClusterTemplateGeneratorConfigurationResolver.class);
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Value("${cb.clusterdefinition.cm.version.files:cloudera-manager-template/cdh}")
     private String cdhConfigurationsPath;
@@ -47,14 +49,11 @@ public class ClusterTemplateGeneratorConfigurationResolver implements ResourceLo
 
     private Set<ServiceConfig> serviceInformations = new HashSet<>();
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
     @PostConstruct
     public void prepareConfigs() {
         cdhConfigurationsMap = readAllFilesFromParameterDir();
         serviceInformations = readServiceDefinitions();
     }
-
 
     public Map<StackVersion, Set<String>> cdhConfigurations() {
         return cdhConfigurationsMap;

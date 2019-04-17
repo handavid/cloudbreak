@@ -17,10 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.skyscreamer.jsonassert.JSONParser;
-import org.springframework.beans.BeansException;
 import org.springframework.boot.test.context.SpringBootTestContextBootstrapper;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.context.BootstrapWith;
 import org.springframework.test.context.TestContextManager;
 
@@ -30,9 +27,9 @@ import com.sequenceiq.cloudbreak.util.FileReaderUtils;
 
 @RunWith(Parameterized.class)
 @BootstrapWith(SpringBootTestContextBootstrapper.class)
-public class GeneratedClusterTemplateServiceTest extends CentralTemplateGeneratorContext implements ApplicationContextAware {
+public class GeneratedClusterTemplateServiceTest extends CentralTemplateGeneratorContext {
 
-    static final String TEMPLATE_GENERATOR_TEST_OUTPUTS = "module-test/outputs";
+    private static final String TEMPLATE_GENERATOR_TEST_OUTPUTS = "module-test/outputs";
 
     private static final String CDH = "CDH";
 
@@ -40,25 +37,17 @@ public class GeneratedClusterTemplateServiceTest extends CentralTemplateGenerato
 
     private static final String UUID = "uuid";
 
-
-    private ApplicationContext applicationContext;
-
     @Parameterized.Parameter
-    public Set<String> inputs;
+    private Set<String> inputs;
 
     @Parameterized.Parameter(1)
-    public String stackType;
+    private String stackType;
 
     @Parameterized.Parameter(2)
-    public String version;
+    private String version;
 
     @Parameterized.Parameter(3)
-    public String outputPath;
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+    private String outputPath;
 
     @Before
     public void setUp() throws Exception {

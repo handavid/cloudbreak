@@ -11,10 +11,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.springframework.beans.BeansException;
 import org.springframework.boot.test.context.SpringBootTestContextBootstrapper;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.context.BootstrapWith;
 import org.springframework.test.context.TestContextManager;
 
@@ -23,30 +20,23 @@ import com.sequenceiq.cloudbreak.cmtemplate.generator.dependencies.domain.Servic
 
 @RunWith(Parameterized.class)
 @BootstrapWith(SpringBootTestContextBootstrapper.class)
-public class ServiceDependencyMatrixServiceTest extends CentralTemplateGeneratorContext implements ApplicationContextAware {
+public class ServiceDependencyMatrixServiceTest extends CentralTemplateGeneratorContext {
 
     private static final String CDH = "CDH";
 
     private static final String CDH_6_1 = "6.1";
 
-    private ApplicationContext applicationContext;
-
     @Parameter
-    public Set<String> inputs;
+    private Set<String> inputs;
 
     @Parameter(1)
-    public String stackType;
+    private String stackType;
 
     @Parameter(2)
-    public String version;
+    private String version;
 
     @Parameter(3)
-    public Set<String> dependencies;
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+    private Set<String> dependencies;
 
     @Before
     public void setUp() throws Exception {
@@ -64,8 +54,8 @@ public class ServiceDependencyMatrixServiceTest extends CentralTemplateGenerator
 
     @Parameters(name = "{index}: testServicesAndDependencies(get {0} with {1} {2}) = dependencies are {3}")
     public static Iterable<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { Set.of("OOZIE"), CDH, CDH_6_1, Set.of("HDFS") }
+        return Arrays.asList(new Object[][]{
+                {Set.of("OOZIE"), CDH, CDH_6_1, Set.of("HDFS")}
         });
     }
 }

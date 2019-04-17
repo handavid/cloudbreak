@@ -6,7 +6,7 @@ import com.sequenceiq.cloudbreak.api.endpoint.v4.JsonEntity;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SupportedServiceV4Response implements JsonEntity, Comparable {
+public class SupportedServiceV4Response implements JsonEntity, Comparable<SupportedServiceV4Response> {
 
     private String name;
 
@@ -28,10 +28,8 @@ public class SupportedServiceV4Response implements JsonEntity, Comparable {
         this.displayName = displayName;
     }
 
-
     @Override
-    public int compareTo(Object anotherObject) {
-        SupportedServiceV4Response anotherService = (SupportedServiceV4Response) anotherObject;
+    public int compareTo(SupportedServiceV4Response anotherService) {
         return this.name.compareTo(anotherService.name);
     }
 }

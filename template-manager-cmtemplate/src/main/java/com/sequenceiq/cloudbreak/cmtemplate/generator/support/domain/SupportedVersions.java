@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class SupportedVersions {
 
-    Set<SupportedVersion> supportedVersions = new HashSet<>();
+    private Set<SupportedVersion> supportedVersions = new HashSet<>();
 
     public Set<SupportedVersion> getSupportedVersions() {
         return supportedVersions;

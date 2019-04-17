@@ -44,9 +44,8 @@ class ClusterTemplateGeneratorServiceTest {
         dependencies.setServices(Set.of("ZOOKEPER"));
         dependentServices.setDependencies(dependencies);
 
-        when(serviceDependencyMatrixService.collectServiceDependencyMatrix(services, "CDH","6.1.1" ))
+        when(serviceDependencyMatrixService.collectServiceDependencyMatrix(services, "CDH", "6.1.1"))
                 .thenReturn(dependentServices);
-
 
         underTest.generateTemplateByServices(services, "CDH-6.1.1");
 

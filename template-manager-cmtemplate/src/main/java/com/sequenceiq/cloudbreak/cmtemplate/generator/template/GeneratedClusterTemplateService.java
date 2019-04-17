@@ -118,15 +118,13 @@ public class GeneratedClusterTemplateService {
 
     private List<ApiClusterTemplateHostTemplate> prepareApiClusterTemplateHostTemplates(Map<String, Set<String>> hostServiceMap) {
         List<ApiClusterTemplateHostTemplate> hostTemplates = new ArrayList<>();
-        for (String key : hostServiceMap.keySet()) {
+        hostServiceMap.forEach((key, roleConfigRefNames) -> {
             ApiClusterTemplateHostTemplate apiClusterTemplateHostTemplate = new ApiClusterTemplateHostTemplate();
             apiClusterTemplateHostTemplate.setRefName(key);
             apiClusterTemplateHostTemplate.setRoleConfigGroupsRefNames(new ArrayList<>());
-            for (String name : hostServiceMap.get(key)) {
-                apiClusterTemplateHostTemplate.getRoleConfigGroupsRefNames().add(name);
-            }
+            apiClusterTemplateHostTemplate.getRoleConfigGroupsRefNames().addAll(roleConfigRefNames);
             hostTemplates.add(apiClusterTemplateHostTemplate);
-        }
+        });
         return hostTemplates;
     }
 }
