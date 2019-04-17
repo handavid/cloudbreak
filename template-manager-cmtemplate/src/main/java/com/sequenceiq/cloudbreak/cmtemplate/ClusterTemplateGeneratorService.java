@@ -1,5 +1,6 @@
 package com.sequenceiq.cloudbreak.cmtemplate;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,10 +31,11 @@ public class ClusterTemplateGeneratorService {
     public GeneratedClusterTemplate generateTemplateByServices(Set<String> services, String platform) {
         String generatedId = UUID.randomUUID().toString();
         String[] stackTypeAndVersionArray = getStackTypeAndVersion(platform);
-        Set<String> servicesWithDependencies = serviceDependencyMatrixService
+        Set<String> dependentServices = serviceDependencyMatrixService
                 .collectServiceDependencyMatrix(services, stackTypeAndVersionArray[0], stackTypeAndVersionArray[1])
                 .getDependencies()
                 .getServices();
+        Set<String> servicesWithDependencies = new HashSet<>(dependentServices);
         servicesWithDependencies.addAll(services);
 
         return generatedClusterTemplateService.prepareClusterTemplate(
@@ -52,6 +54,7 @@ public class ClusterTemplateGeneratorService {
     }
 
     private String[] getStackTypeAndVersion(String platform) {
+        //Maybe the usage of a Pattern instead of simple split would be more elegant, especially if we support CDH versions only :)
         String[] stackTypeAndVersionArray = platform.split("-");
         if (stackTypeAndVersionArray.length != 2) {
             throw new BadRequestException("The request does not contain stack type and version or it does not match for the required pattern eg CDH-6.1.");

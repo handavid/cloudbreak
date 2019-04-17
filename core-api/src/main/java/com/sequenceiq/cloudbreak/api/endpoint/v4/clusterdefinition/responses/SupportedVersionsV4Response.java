@@ -12,7 +12,7 @@ import com.sequenceiq.cloudbreak.api.endpoint.v4.JsonEntity;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SupportedVersionsV4Response implements JsonEntity {
 
-    Set<SupportedVersionV4Response> supportedVersions = new HashSet<>();
+    private Set<SupportedVersionV4Response> supportedVersions = new HashSet<>();
 
     public Set<SupportedVersionV4Response> getSupportedVersions() {
         return supportedVersions;
