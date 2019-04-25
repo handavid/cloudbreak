@@ -138,7 +138,7 @@ public class StackV4RequestToStackConverter extends AbstractConversionServiceAwa
             stack.setCustomHostname(source.getCustomDomain().getHostname());
             stack.setClusterNameAsSubdomain(source.getCustomDomain().isClusterNameAsSubdomain());
             stack.setHostgroupNameAsHostname(source.getCustomDomain().isHostgroupNameAsHostname());
-        } else if (!isEmpty(source.getCluster().getKerberosName())) {
+            } else if (!isEmpty(source.getCluster().getKerberosName())) {
             KerberosConfig kerberosConfig = stack.getCluster().getKerberosConfig();
             if (kerberosConfig == null) {
                 throw new BadRequestException("Cluster should be converted before custom domain is updated by kerberos config");

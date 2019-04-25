@@ -6,9 +6,9 @@ import javax.transaction.Transactional.TxType;
 
 import org.springframework.stereotype.Controller;
 
-import com.sequenceiq.freeipa.api.CreateEndpoint;
-import com.sequenceiq.freeipa.api.CreateFreeIpaRequest;
-import com.sequenceiq.freeipa.api.CreateFreeIpaResponse;
+import com.sequenceiq.freeipa.api.model.create.CreateEndpoint;
+import com.sequenceiq.freeipa.api.model.create.CreateFreeIpaRequest;
+import com.sequenceiq.freeipa.api.model.create.CreateFreeIpaResponse;
 import com.sequenceiq.freeipa.service.StackCreationService;
 
 @Controller

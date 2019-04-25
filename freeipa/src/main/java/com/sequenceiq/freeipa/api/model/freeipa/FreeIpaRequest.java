@@ -1,20 +1,16 @@
-package com.sequenceiq.freeipa.api.model;
+package com.sequenceiq.freeipa.api.model.freeipa;
 
-public class FreeIpaRequest {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-    private String domainName;
+import io.swagger.annotations.ApiModel;
+
+@ApiModel
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class FreeIpaRequest extends FreeIpaBase {
 
     private String adminUserName;
 
     private String adminPassword;
-
-    public String getDomainName() {
-        return domainName;
-    }
-
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
-    }
 
     public String getAdminUserName() {
         return adminUserName;

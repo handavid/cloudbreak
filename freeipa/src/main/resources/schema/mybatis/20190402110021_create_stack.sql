@@ -23,13 +23,16 @@ create table stack
   name varchar(255),
   region varchar(255),
   created bigint default (date_part('epoch'::text, now()) * (1000)::double precision),
+  terminated bigint,
   platformvariant text,
   availabilityzone text,
   cloudplatform varchar(255),
   gatewayport integer default 9443,
   stackauthentication_id bigint
     constraint fk_stack_stackauthentication_id
-      references stackauthentication
+      references stackauthentication,
+  tags text,
+  stackstatus_id bigint
 );
 
 create unique index stack_id_idx

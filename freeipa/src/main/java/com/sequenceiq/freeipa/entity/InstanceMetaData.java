@@ -22,9 +22,6 @@ public class InstanceMetaData {
 
     private Long privateId;
 
-    @ManyToOne
-    private Stack stack;
-
     private String privateIp;
 
     private String publicIp;
@@ -53,6 +50,9 @@ public class InstanceMetaData {
     private String subnetId;
 
     private String instanceName;
+
+    @ManyToOne
+    private InstanceGroup instanceGroup;
 
     public String getPrivateIp() {
         return privateIp;
@@ -227,11 +227,11 @@ public class InstanceMetaData {
         this.instanceName = instanceName;
     }
 
-    public Stack getStack() {
-        return stack;
+    public InstanceGroup getInstanceGroup() {
+        return instanceGroup;
     }
 
-    public void setStack(Stack stack) {
-        this.stack = stack;
+    public void setInstanceGroup(InstanceGroup instanceGroup) {
+        this.instanceGroup = instanceGroup;
     }
 }

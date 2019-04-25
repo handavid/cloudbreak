@@ -27,9 +27,9 @@ create table instancemetadata
   publicip varchar(255),
   startdate bigint,
   terminationdate bigint,
-  stack_id bigint
-    constraint fk_instancemetadata_stack_id
-      references stack
+  instancegroup_id bigint
+    constraint fk_instancemetadata_instancegroup_id
+      references instancegroup
       on delete cascade,
   privateid bigint,
   localityindicator varchar(255),
@@ -41,8 +41,8 @@ create table instancemetadata
 );
 
 
-create index instancemetadata_stack_id
-  on instancemetadata (stack_id);
+create index instancemetadata_instancegroup_id
+  on instancemetadata (instancegroup_id);
 
 
 

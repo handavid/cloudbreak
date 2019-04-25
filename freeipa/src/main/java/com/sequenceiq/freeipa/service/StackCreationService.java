@@ -1,58 +1,18 @@
 package com.sequenceiq.freeipa.service;
 
-import static com.sequenceiq.cloudbreak.cloud.model.Platform.platform;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import javax.inject.Inject;
 
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
-import com.sequenceiq.cloudbreak.api.endpoint.v4.common.AdjustmentType;
-import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.InstanceGroupType;
-import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.base.InstanceMetadataType;
-import com.sequenceiq.cloudbreak.client.PkiUtil;
-import com.sequenceiq.cloudbreak.cloud.context.CloudContext;
-import com.sequenceiq.cloudbreak.cloud.event.platform.GetPlatformTemplateRequest;
-import com.sequenceiq.cloudbreak.cloud.event.platform.GetPlatformTemplateResult;
-import com.sequenceiq.cloudbreak.cloud.event.platform.PlatformParameterRequest;
-import com.sequenceiq.cloudbreak.cloud.event.platform.PlatformParameterResult;
-import com.sequenceiq.cloudbreak.cloud.event.resource.LaunchStackRequest;
-import com.sequenceiq.cloudbreak.cloud.model.AvailabilityZone;
-import com.sequenceiq.cloudbreak.cloud.model.CloudCredential;
-import com.sequenceiq.cloudbreak.cloud.model.CloudInstance;
-import com.sequenceiq.cloudbreak.cloud.model.CloudStack;
-import com.sequenceiq.cloudbreak.cloud.model.Group;
-import com.sequenceiq.cloudbreak.cloud.model.Image;
-import com.sequenceiq.cloudbreak.cloud.model.InstanceAuthentication;
-import com.sequenceiq.cloudbreak.cloud.model.InstanceStatus;
-import com.sequenceiq.cloudbreak.cloud.model.InstanceTemplate;
-import com.sequenceiq.cloudbreak.cloud.model.Location;
-import com.sequenceiq.cloudbreak.cloud.model.Network;
-import com.sequenceiq.cloudbreak.cloud.model.Platform;
-import com.sequenceiq.cloudbreak.cloud.model.PortDefinition;
-import com.sequenceiq.cloudbreak.cloud.model.Region;
-import com.sequenceiq.cloudbreak.cloud.model.Security;
-import com.sequenceiq.cloudbreak.cloud.model.SecurityRule;
-import com.sequenceiq.cloudbreak.cloud.model.Subnet;
-import com.sequenceiq.cloudbreak.cloud.model.Volume;
-import com.sequenceiq.cloudbreak.service.OperationException;
-import com.sequenceiq.freeipa.api.CreateFreeIpaRequest;
-import com.sequenceiq.freeipa.entity.InstanceMetaData;
-import com.sequenceiq.freeipa.entity.SaltSecurityConfig;
-import com.sequenceiq.freeipa.entity.SecurityConfig;
+import com.sequenceiq.freeipa.api.model.create.CreateFreeIpaRequest;
+import com.sequenceiq.freeipa.converter.CreateFreeIpaRequestToStackConverter;
 import com.sequenceiq.freeipa.entity.Stack;
-import com.sequenceiq.freeipa.entity.StackAuthentication;
 import com.sequenceiq.freeipa.repository.InstanceMetaDataRepository;
 import com.sequenceiq.freeipa.repository.SaltSecurityConfigRepository;
 import com.sequenceiq.freeipa.repository.SecurityConfigRepository;
 import com.sequenceiq.freeipa.repository.StackAuthenticationRepository;
 import com.sequenceiq.freeipa.repository.StackRepository;
 
-import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 @Service
@@ -82,9 +42,13 @@ public class StackCreationService {
     @Inject
     private InstanceMetaDataRepository instanceMetaDataRepository;
 
+    @Inject
+    private CreateFreeIpaRequestToStackConverter stackConverter;
+
     public void launchStack(CreateFreeIpaRequest request) {
-        Stack stack = createStack(request);
-        saveInstanceMetadata(stack);
+        Stack stack = stackConverter.convert(request);
+        stackRepository.save(stack);
+        /*saveInstanceMetadata(stack);
         Location location = Location.location(Region.region(request.getRegion()), AvailabilityZone.availabilityZone(request.getAvailabilityZone()));
         CloudContext cloudCtx = new CloudContext(stack.getId(), request.getName(), "AWS", "AWS", location, "1", 1L);
         CloudCredential cloudCredential = new CloudCredential(1L, "aws-key",
@@ -123,10 +87,10 @@ public class StackCreationService {
                 Collections.emptyMap(), Map.of("Owner", "test"), templateResult.getTemplate(), instanceAuthentication, "cloudbreak",
                 request.getPublicKey(), null);
         LaunchStackRequest launchStackRequest = new LaunchStackRequest(cloudCtx, cloudCredential, cloudStack, AdjustmentType.EXACT, 1L);
-        eventBus.notify(launchStackRequest.selector(), new Event<>(launchStackRequest));
+        eventBus.notify(launchStackRequest.selector(), new Event<>(launchStackRequest));*/
     }
 
-    private void saveInstanceMetadata(Stack stack) {
+/*    private void saveInstanceMetadata(Stack stack) {
         InstanceMetaData instanceMetaData = new InstanceMetaData();
         instanceMetaData.setStack(stack);
         instanceMetaData.setInstanceMetadataType(InstanceMetadataType.GATEWAY_PRIMARY);
@@ -142,7 +106,7 @@ public class StackCreationService {
         } catch (InterruptedException e) {
             throw new OperationException(e);
         }
-        Platform platform = platform(stack.getCloudplatform());
+        Platform platform = platform(stack.getCloudPlatform());
         String region = stack.getRegion();
         SecurityConfig securityConfig = stack.getSecurityConfig();
         SaltSecurityConfig saltSecurityConfig = securityConfig.getSaltSecurityConfig();
@@ -158,8 +122,8 @@ public class StackCreationService {
         Stack stack = new Stack();
         stack.setName(request.getName());
         stack.setRegion(request.getRegion());
-        stack.setAvailabilityzone(request.getAvailabilityZone());
-        stack.setCloudplatform("AWS");
+        stack.setAvailabilityZone(request.getAvailabilityZone());
+        stack.setCloudPlatform("AWS");
         stack.setPlatformvariant("AWS");
         StackAuthentication stackAuthentication = new StackAuthentication();
         stackAuthentication.setLoginUserName("cloudbreak");
@@ -171,5 +135,5 @@ public class StackCreationService {
         securityConfig = securityConfigRepository.save(securityConfig);
         stack.setSecurityConfig(securityConfig);
         return stackRepository.save(stack);
-    }
+    }*/
 }

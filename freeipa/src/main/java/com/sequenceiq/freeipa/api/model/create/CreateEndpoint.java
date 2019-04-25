@@ -1,4 +1,4 @@
-package com.sequenceiq.freeipa.api;
+package com.sequenceiq.freeipa.api.model.create;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

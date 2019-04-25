@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+
+import com.sequenceiq.freeipa.entity.json.Json;
+import com.sequenceiq.freeipa.entity.json.JsonToString;
 
 @Entity
 public class Stack {
@@ -30,21 +34,36 @@ public class Stack {
     @Column(columnDefinition = "TEXT")
     private String platformvariant;
 
-    private String availabilityzone;
+    private String availabilityZone;
 
     @Column(columnDefinition = "TEXT")
-    private String cloudplatform;
+    private String cloudPlatform;
 
     private Integer gatewayport = 9443;
 
     @OneToMany(mappedBy = "stack", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<InstanceMetaData> instanceMetaData = new HashSet<>();
+    private Set<InstanceGroup> instanceGroups = new HashSet<>();
 
     @OneToOne(mappedBy = "stack", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private SecurityConfig securityConfig;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private StackAuthentication stackAuthentication;
+
+    private Long terminated;
+
+    @Convert(converter = JsonToString.class)
+    @Column(columnDefinition = "TEXT")
+    private Json tags;
+
+    @OneToOne
+    private Credential credential;
+
+    @OneToOne
+    private Network network;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private StackStatus stackStatus;
 
     public Long getId() {
         return id;
@@ -86,20 +105,20 @@ public class Stack {
         this.platformvariant = platformvariant;
     }
 
-    public String getAvailabilityzone() {
-        return availabilityzone;
+    public String getAvailabilityZone() {
+        return availabilityZone;
     }
 
-    public void setAvailabilityzone(String availabilityzone) {
-        this.availabilityzone = availabilityzone;
+    public void setAvailabilityZone(String availabilityZone) {
+        this.availabilityZone = availabilityZone;
     }
 
-    public String getCloudplatform() {
-        return cloudplatform;
+    public String getCloudPlatform() {
+        return cloudPlatform;
     }
 
-    public void setCloudplatform(String cloudplatform) {
-        this.cloudplatform = cloudplatform;
+    public void setCloudPlatform(String cloudPlatform) {
+        this.cloudPlatform = cloudPlatform;
     }
 
     public Integer getGatewayport() {
@@ -108,14 +127,6 @@ public class Stack {
 
     public void setGatewayport(Integer gatewayport) {
         this.gatewayport = gatewayport;
-    }
-
-    public Set<InstanceMetaData> getInstanceMetaData() {
-        return instanceMetaData;
-    }
-
-    public void setInstanceMetaData(Set<InstanceMetaData> instanceMetaData) {
-        this.instanceMetaData = instanceMetaData;
     }
 
     public SecurityConfig getSecurityConfig() {
@@ -132,5 +143,53 @@ public class Stack {
 
     public void setStackAuthentication(StackAuthentication stackAuthentication) {
         this.stackAuthentication = stackAuthentication;
+    }
+
+    public Set<InstanceGroup> getInstanceGroups() {
+        return instanceGroups;
+    }
+
+    public void setInstanceGroups(Set<InstanceGroup> instanceGroups) {
+        this.instanceGroups = instanceGroups;
+    }
+
+    public Long getTerminated() {
+        return terminated;
+    }
+
+    public void setTerminated(Long terminated) {
+        this.terminated = terminated;
+    }
+
+    public Json getTags() {
+        return tags;
+    }
+
+    public void setTags(Json tags) {
+        this.tags = tags;
+    }
+
+    public Credential getCredential() {
+        return credential;
+    }
+
+    public void setCredential(Credential credential) {
+        this.credential = credential;
+    }
+
+    public Network getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
+
+    public StackStatus getStackStatus() {
+        return stackStatus;
+    }
+
+    public void setStackStatus(StackStatus stackStatus) {
+        this.stackStatus = stackStatus;
     }
 }
