@@ -129,10 +129,7 @@ public class StackV4RequestToStackConverter extends AbstractConversionServiceAwa
         stack.setCreated(clock.getCurrentTimeMillis());
         stack.setInstanceGroups(convertInstanceGroups(source, stack));
         updateCluster(source, stack, workspace);
-        if (source.getNetwork() != null) {
-            source.getNetwork().setCloudPlatform(source.getCloudPlatform());
-            stack.setNetwork(getConversionService().convert(source.getNetwork(), Network.class));
-        }
+        setNetworkIfApplicable(source, stack);
         if (source.getCustomDomain() != null) {
             stack.setCustomDomain(source.getCustomDomain().getDomainName());
             stack.setCustomHostname(source.getCustomDomain().getHostname());
@@ -329,5 +326,15 @@ public class StackV4RequestToStackConverter extends AbstractConversionServiceAwa
         ImageSettingsV4Request imageSettings = source.getImage();
         Image image = new Image(null, null, imageSettings.getOs(), null, null, imageSettings.getCatalog(), imageSettings.getId(), null);
         return new com.sequenceiq.cloudbreak.domain.stack.Component(ComponentType.IMAGE, ComponentType.IMAGE.name(), Json.silent(image), stack);
+    }
+
+    private void setNetworkIfApplicable(StackV4Request source, Stack stack) {
+        if (source.getNetwork() != null) {
+            source.getNetwork().setCloudPlatform(source.getCloudPlatform());
+            stack.setNetwork(getConversionService().convert(source.getNetwork(), Network.class));
+        } else if (stack.getEnvironment() != null && stack.getEnvironment().getNetwork() != null) {
+            Network networkFromEnvironment = getConversionService().convert(stack.getEnvironment(), Network.class);
+            stack.setNetwork(networkFromEnvironment);
+        }
     }
 }

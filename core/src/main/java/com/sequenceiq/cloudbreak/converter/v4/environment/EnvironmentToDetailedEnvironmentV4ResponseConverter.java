@@ -1,5 +1,8 @@
 package com.sequenceiq.cloudbreak.converter.v4.environment;
 
+import static com.sequenceiq.cloudbreak.api.endpoint.v4.common.mappable.CloudPlatform.AWS;
+import static com.sequenceiq.cloudbreak.api.endpoint.v4.common.mappable.CloudPlatform.AZURE;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,9 +15,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.sequenceiq.cloudbreak.api.endpoint.v4.common.StackType;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.common.mappable.CloudPlatform;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.database.responses.DatabaseV4Response;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.base.EnvironmentNetworkAwsV4Params;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.base.EnvironmentNetworkAzureV4Params;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.responses.DatalakeResourcesV4Response;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.responses.DetailedEnvironmentV4Response;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.responses.EnvironmentNetworkV4Response;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.responses.LocationV4Response;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.responses.ServiceDescriptorV4Response;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.kerberos.responses.KerberosV4Response;
@@ -25,6 +32,9 @@ import com.sequenceiq.cloudbreak.api.endpoint.v4.stacks.response.StackViewV4Resp
 import com.sequenceiq.cloudbreak.api.endpoint.v4.workspace.responses.WorkspaceResourceV4Response;
 import com.sequenceiq.cloudbreak.converter.AbstractConversionServiceAwareConverter;
 import com.sequenceiq.cloudbreak.domain.RDSConfig;
+import com.sequenceiq.cloudbreak.domain.environment.AwsNetwork;
+import com.sequenceiq.cloudbreak.domain.environment.AzureNetwork;
+import com.sequenceiq.cloudbreak.domain.environment.BaseNetwork;
 import com.sequenceiq.cloudbreak.domain.environment.Environment;
 import com.sequenceiq.cloudbreak.domain.stack.cluster.DatalakeResources;
 import com.sequenceiq.cloudbreak.domain.stack.cluster.ServiceDescriptor;
@@ -121,6 +131,32 @@ public class EnvironmentToDetailedEnvironmentV4ResponseConverter extends Abstrac
         }
         response.setDatalakeResourcesNames(datalakeResourcesNames);
         response.setDatalakeResources(datalakeResourcesResponses);
+        setNetworkIfPossible(response, source);
         return response;
+    }
+
+    private void setNetworkIfPossible(DetailedEnvironmentV4Response response, Environment source) {
+        BaseNetwork network = source.getNetwork();
+        if (network != null) {
+            EnvironmentNetworkV4Response networkResp = new EnvironmentNetworkV4Response();
+            networkResp.setId(network.getId());
+            networkResp.setName(network.getName());
+            networkResp.setSubnetIds(network.getSubnetIdsSet());
+            if (AWS.equals(CloudPlatform.valueOf(source.getCloudPlatform()))) {
+                AwsNetwork awsNetwork = (AwsNetwork) network;
+                EnvironmentNetworkAwsV4Params awsV4Params = new EnvironmentNetworkAwsV4Params();
+                awsV4Params.setVpcId(awsNetwork.getVpcId());
+                networkResp.setAws(awsV4Params);
+            } else if (AZURE.equals(CloudPlatform.valueOf(source.getCloudPlatform()))) {
+                AzureNetwork azureNetwork = (AzureNetwork) network;
+                EnvironmentNetworkAzureV4Params azureV4Params = new EnvironmentNetworkAzureV4Params();
+                azureV4Params.setNetworkId(azureNetwork.getNetworkId());
+                azureV4Params.setResourceGroupName(azureNetwork.getResourceGroupName());
+                azureV4Params.setNoPublicIp(azureNetwork.getNoPublicIp());
+                azureV4Params.setNoFirewallRules(azureNetwork.getNoFirewallRules());
+                networkResp.setAzure(azureV4Params);
+            }
+            response.setNetwork(networkResp);
+        }
     }
 }

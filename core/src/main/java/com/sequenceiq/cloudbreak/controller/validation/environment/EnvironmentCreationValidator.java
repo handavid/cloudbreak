@@ -25,6 +25,9 @@ public class EnvironmentCreationValidator {
     @Inject
     private EnvironmentRegionValidator environmentRegionValidator;
 
+    @Inject
+    private EnvironmentNetworkValidator environmentNetworkValidator;
+
     public ValidationResult validate(Environment environment, EnvironmentV4Request request, CloudRegions cloudRegions) {
         ValidationResultBuilder resultBuilder = ValidationResult.builder();
         validateLdapConfigs(environment, request, resultBuilder);
@@ -34,6 +37,7 @@ public class EnvironmentCreationValidator {
         environmentRegionValidator.validateRegions(request.getRegions(), cloudRegions, environment.getCloudPlatform(), resultBuilder);
         environmentRegionValidator.validateLocation(request.getLocation(), request.getRegions(), environment, resultBuilder);
         validateKerberosConfigs(environment, request, resultBuilder);
+        environmentNetworkValidator.validateNetwork(request.getNetwork(), environment.getCloudPlatform(), resultBuilder);
         return resultBuilder.build();
     }
 

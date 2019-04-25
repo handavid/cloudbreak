@@ -14,6 +14,7 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -32,6 +33,9 @@ import com.sequenceiq.cloudbreak.util.EnvironmentUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnvironmentCreationValidatorTest {
+
+    @Mock
+    private EnvironmentNetworkValidator environmentNetworkValidator;
 
     @Spy
     private EnvironmentRegionValidator environmentRegionValidator = new EnvironmentRegionValidator();

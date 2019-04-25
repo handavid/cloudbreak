@@ -99,17 +99,13 @@ public class StackValidationV4RequestToStackValidationConverter extends Abstract
         return stackValidation;
     }
 
-    private void validateNetwork(Long networkId, NetworkV4Request networkRequest, StackValidation stackValidation) {
-        SpecialParameters specialParameters =
-                cloudParameterCache.getPlatformParameters().get(Platform.platform(stackValidation.getCredential().cloudPlatform())).specialParameters();
-        if (networkId != null) {
-            Network network = networkService.get(networkId);
-            stackValidation.setNetwork(network);
-        } else if (networkRequest != null) {
-            Network network = converterUtil.convert(networkRequest, Network.class);
-            stackValidation.setNetwork(network);
-        } else if (specialParameters.getSpecialParameters().get(PlatformParametersConsts.NETWORK_IS_MANDATORY)) {
-            throw new BadRequestException("Network is not configured for the validation request!");
+    private void validateBlueprint(StackValidationV4Request stackValidationRequest, StackValidation stackValidation, Workspace workspace) {
+        Set<Blueprint> allAvailableInWorkspace = blueprintService.getAllAvailableInWorkspace(workspace);
+        if (stackValidationRequest.getBlueprintName() == null) {
+            throw new BadRequestException("Cluster definition is not configured for the validation request!");
+        }
+        if (stackValidationRequest.getBlueprintName() != null) {
+            selectBlueprint(allAvailableInWorkspace, stackValidation, cd -> cd.getName().equals(stackValidationRequest.getBlueprintName()));
         }
     }
 
@@ -130,13 +126,20 @@ public class StackValidationV4RequestToStackValidationConverter extends Abstract
         }
     }
 
-    private void validateBlueprint(StackValidationV4Request stackValidationRequest, StackValidation stackValidation, Workspace workspace) {
-        Set<Blueprint> allAvailableInWorkspace = blueprintService.getAllAvailableInWorkspace(workspace);
-        if (stackValidationRequest.getBlueprintName() == null) {
-            throw new BadRequestException("Cluster definition is not configured for the validation request!");
-        }
-        if (stackValidationRequest.getBlueprintName() != null) {
-            selectBlueprint(allAvailableInWorkspace, stackValidation, cd -> cd.getName().equals(stackValidationRequest.getBlueprintName()));
+    private void validateNetwork(Long networkId, NetworkV4Request networkRequest, StackValidation stackValidation) {
+        SpecialParameters specialParameters =
+                cloudParameterCache.getPlatformParameters().get(Platform.platform(stackValidation.getCredential().cloudPlatform())).specialParameters();
+        if (networkId != null) {
+            Network network = networkService.get(networkId);
+            stackValidation.setNetwork(network);
+        } else if (stackValidation.getEnvironment() != null && stackValidation.getEnvironment().getNetwork() != null) {
+            Network networkFromEnvironment = getConversionService().convert(stackValidation.getEnvironment(), Network.class);
+            stackValidation.setNetwork(networkFromEnvironment);
+        } else if (networkRequest != null) {
+            Network network = converterUtil.convert(networkRequest, Network.class);
+            stackValidation.setNetwork(network);
+        } else if (specialParameters.getSpecialParameters().get(PlatformParametersConsts.NETWORK_IS_MANDATORY)) {
+            throw new BadRequestException("Network is not configured for the validation request!");
         }
     }
 

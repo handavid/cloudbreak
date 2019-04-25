@@ -42,6 +42,9 @@ public class ClusterCreationEnvironmentCreationValidatorTest {
     @Mock
     private RdsConfigService rdsConfigService;
 
+    @Mock
+    private EnvironmentNetworkValidator environmentNetworkValidator;
+
     @InjectMocks
     private ClusterCreationEnvironmentValidator underTest;
 

@@ -25,10 +25,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
+import com.sequenceiq.cloudbreak.api.endpoint.v4.common.mappable.CloudPlatform;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.requests.EnvironmentAttachV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.requests.EnvironmentChangeCredentialV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.requests.EnvironmentDetachV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.requests.EnvironmentEditV4Request;
+import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.requests.EnvironmentNetworkV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.requests.EnvironmentV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.requests.LocationV4Request;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.environment.requests.RegisterDatalakeV4Request;
@@ -53,6 +55,9 @@ import com.sequenceiq.cloudbreak.domain.LdapConfig;
 import com.sequenceiq.cloudbreak.domain.PlatformResourceRequest;
 import com.sequenceiq.cloudbreak.domain.ProxyConfig;
 import com.sequenceiq.cloudbreak.domain.RDSConfig;
+import com.sequenceiq.cloudbreak.domain.environment.AwsNetwork;
+import com.sequenceiq.cloudbreak.domain.environment.AzureNetwork;
+import com.sequenceiq.cloudbreak.domain.environment.BaseNetwork;
 import com.sequenceiq.cloudbreak.domain.environment.Environment;
 import com.sequenceiq.cloudbreak.domain.environment.Region;
 import com.sequenceiq.cloudbreak.domain.json.Json;
@@ -154,6 +159,9 @@ public class EnvironmentService extends AbstractArchivistService<Environment> {
     @Inject
     private AmbariDatalakeConfigProvider ambariDatalakeConfigProvider;
 
+    @Inject
+    private EnvironmentNetworkService environmentNetworkService;
+
     public Set<SimpleEnvironmentV4Response> listByWorkspaceId(Long workspaceId) {
         Set<SimpleEnvironmentV4Response> environmentResponses = environmentViewService.findAllByWorkspaceId(workspaceId).stream()
                 .map(env -> conversionService.convert(env, SimpleEnvironmentV4Response.class))
@@ -206,6 +214,7 @@ public class EnvironmentService extends AbstractArchivistService<Environment> {
             throw new BadRequestException(validationResult.getFormattedErrors());
         }
         environment = createForLoggedInUser(environment, workspaceId);
+        createAndSetNetwork(environment, request.getNetwork());
         return conversionService.convert(environment, DetailedEnvironmentV4Response.class);
     }
 
@@ -527,5 +536,40 @@ public class EnvironmentService extends AbstractArchivistService<Environment> {
     @Override
     public WorkspaceResource resource() {
         return ENVIRONMENT;
+    }
+
+    private void createAndSetNetwork(Environment environment, EnvironmentNetworkV4Request networkRequest) {
+        CloudPlatform cloudPlatform = CloudPlatform.valueOf(environment.getCloudPlatform());
+        BaseNetwork network = createNetworkIfPossible(environment, networkRequest, cloudPlatform);
+        if (network != null) {
+            environment.setNetwork(network);
+        }
+    }
+
+    private BaseNetwork createNetworkIfPossible(Environment environment, EnvironmentNetworkV4Request networkRequest, CloudPlatform cloudPlatform) {
+        BaseNetwork network = null;
+        if (networkRequest != null) {
+            if (CloudPlatform.AWS.equals(cloudPlatform) && networkRequest.getAws() != null) {
+                AwsNetwork awsNetwork = new AwsNetwork();
+                awsNetwork.setName(environment.getName());
+                awsNetwork.setEnvironment(environment);
+                awsNetwork.setVpcId(networkRequest.getAws().getVpcId());
+                awsNetwork.setSubnetIds(networkRequest.getSubnetIds());
+                awsNetwork.setWorkspace(environment.getWorkspace());
+                network = environmentNetworkService.save(awsNetwork);
+            } else if (CloudPlatform.AZURE.equals(cloudPlatform) && networkRequest.getAzure() != null) {
+                AzureNetwork azureNetwork = new AzureNetwork();
+                azureNetwork.setName(environment.getName());
+                azureNetwork.setWorkspace(environment.getWorkspace());
+                azureNetwork.setSubnetIds(networkRequest.getSubnetIds());
+                azureNetwork.setEnvironment(environment);
+                azureNetwork.setNetworkId(networkRequest.getAzure().getNetworkId());
+                azureNetwork.setResourceGroupName(networkRequest.getAzure().getResourceGroupName());
+                azureNetwork.setNoPublicIp(networkRequest.getAzure().getNoPublicIp());
+                azureNetwork.setNoFirewallRules(networkRequest.getAzure().getNoFirewallRules());
+                network = environmentNetworkService.save(azureNetwork);
+            }
+        }
+        return network;
     }
 }
