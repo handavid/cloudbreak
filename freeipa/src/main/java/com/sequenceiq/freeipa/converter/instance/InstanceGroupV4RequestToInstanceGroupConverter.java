@@ -6,11 +6,11 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sequenceiq.cloudbreak.api.endpoint.v4.common.mappable.ProviderParameterCalculator;
-import com.sequenceiq.cloudbreak.converter.AbstractConversionServiceAwareConverter;
 import com.sequenceiq.freeipa.api.model.instance.InstanceGroupV4Request;
 import com.sequenceiq.freeipa.controller.exception.BadRequestException;
 import com.sequenceiq.freeipa.entity.InstanceGroup;
@@ -20,7 +20,7 @@ import com.sequenceiq.freeipa.entity.Template;
 import com.sequenceiq.freeipa.entity.json.Json;
 
 @Component
-public class InstanceGroupV4RequestToInstanceGroupConverter extends AbstractConversionServiceAwareConverter<InstanceGroupV4Request, InstanceGroup> {
+public class InstanceGroupV4RequestToInstanceGroupConverter  implements Converter<InstanceGroupV4Request, InstanceGroup> {
 
     @Inject
     private ProviderParameterCalculator providerParameterCalculator;

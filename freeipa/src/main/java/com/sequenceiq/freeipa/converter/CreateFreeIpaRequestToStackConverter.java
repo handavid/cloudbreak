@@ -80,7 +80,7 @@ public class CreateFreeIpaRequestToStackConverter implements Converter<CreateFre
     }
 
     private void updateCloudPlatformAndRelatedFields(CreateFreeIpaRequest source, Stack stack) {
-        String cloudPlatform = source.getCloudPlatform().name();
+        String cloudPlatform = source.getCredential().getCloudPlatform();
         source.setCloudPlatform(CloudPlatform.valueOf(cloudPlatform));
         stack.setRegion(getRegion(source, cloudPlatform));
         stack.setCloudPlatform(cloudPlatform);
