@@ -21,7 +21,8 @@ create table if not exists securitygroup
     constraint securitygroup_pkey
       primary key,
   securitygroupid varchar(255),
-  cloudplatform varchar(255)
+  cloudplatform varchar(255),
+  name varchar(255)
 );
 
 create table if not exists securitygroup_securitygroupids

@@ -22,6 +22,8 @@ public class SecurityGroup {
     @SequenceGenerator(name = "securitygroup_generator", sequenceName = "securitygroup_id_seq", allocationSize = 1)
     private Long id;
 
+    private String name;
+
     @OneToMany(mappedBy = "securityGroup", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<SecurityRule> securityRules = new HashSet<>();
 
@@ -55,5 +57,13 @@ public class SecurityGroup {
 
     public void setSecurityGroupIds(Set<String> securityGroupIds) {
         this.securityGroupIds = securityGroupIds;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

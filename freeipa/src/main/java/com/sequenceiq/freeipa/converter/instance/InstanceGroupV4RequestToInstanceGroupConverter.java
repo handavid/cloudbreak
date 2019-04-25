@@ -15,8 +15,6 @@ import com.sequenceiq.freeipa.api.model.instance.InstanceGroupV4Request;
 import com.sequenceiq.freeipa.controller.exception.BadRequestException;
 import com.sequenceiq.freeipa.entity.InstanceGroup;
 import com.sequenceiq.freeipa.entity.InstanceMetaData;
-import com.sequenceiq.freeipa.entity.SecurityGroup;
-import com.sequenceiq.freeipa.entity.Template;
 import com.sequenceiq.freeipa.entity.json.Json;
 
 @Component
@@ -25,12 +23,18 @@ public class InstanceGroupV4RequestToInstanceGroupConverter  implements Converte
     @Inject
     private ProviderParameterCalculator providerParameterCalculator;
 
+    @Inject
+    private InstanceTemplateV4RequestToTemplateConverter templateConverter;
+
+    @Inject
+    private SecurityGroupV4RequestToSecurityGroupConverter securityGroupConverter;
+
     @Override
     public InstanceGroup convert(InstanceGroupV4Request source) {
         InstanceGroup instanceGroup = new InstanceGroup();
         source.getTemplate().setCloudPlatform(source.getCloudPlatform());
-        instanceGroup.setTemplate(getConversionService().convert(source.getTemplate(), Template.class));
-        instanceGroup.setSecurityGroup(getConversionService().convert(source.getSecurityGroup(), SecurityGroup.class));
+        instanceGroup.setTemplate(templateConverter.convert(source.getTemplate()));
+        instanceGroup.setSecurityGroup(securityGroupConverter.convert(source.getSecurityGroup()));
         instanceGroup.setGroupName(source.getName());
         setAttributes(source, instanceGroup);
         instanceGroup.setInstanceGroupType(source.getType());
