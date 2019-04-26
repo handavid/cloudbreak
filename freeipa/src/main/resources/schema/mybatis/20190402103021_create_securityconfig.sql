@@ -22,9 +22,6 @@ create table securityconfig
       primary key,
   clientkey text,
   clientcert text,
-  stack_id bigint not null
-    constraint fk_securityconfig_stack_id
-      references stack,
   useprivateiptotls boolean default false not null,
   saltsecurityconfig_id bigint
     constraint fk_securityconfig_saltsecurityconfig_id

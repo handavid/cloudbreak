@@ -5,12 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 
 import com.sequenceiq.cloudbreak.aspect.secret.SecretValue;
 import com.sequenceiq.cloudbreak.domain.Secret;
 import com.sequenceiq.cloudbreak.domain.SecretToString;
+
 
 @Entity
 public class Credential {
@@ -20,12 +20,11 @@ public class Credential {
     @SequenceGenerator(name = "credential_generator", sequenceName = "credential_id_seq", allocationSize = 1)
     private Long id;
 
+    private String name;
+
     @Convert(converter = SecretToString.class)
     @SecretValue
     private Secret attributes = Secret.EMPTY;
-
-    @OneToOne
-    private Stack stack;
 
     public Long getId() {
         return id;
@@ -43,11 +42,11 @@ public class Credential {
         this.attributes = attributes;
     }
 
-    public Stack getStack() {
-        return stack;
+    public String getName() {
+        return name;
     }
 
-    public void setStack(Stack stack) {
-        this.stack = stack;
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -3,7 +3,6 @@ package com.sequenceiq.freeipa.entity;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,9 +15,6 @@ public class SecurityConfig {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "securityconfig_generator")
     @SequenceGenerator(name = "securityconfig_generator", sequenceName = "securityconfig_id_seq", allocationSize = 1)
     private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private Stack stack;
 
     @Column(columnDefinition = "TEXT")
     private String clientKey;
@@ -70,13 +66,5 @@ public class SecurityConfig {
 
     public void setUsePrivateIpToTls(boolean usePrivateIpToTls) {
         this.usePrivateIpToTls = usePrivateIpToTls;
-    }
-
-    public Stack getStack() {
-        return stack;
-    }
-
-    public void setStack(Stack stack) {
-        this.stack = stack;
     }
 }

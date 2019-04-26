@@ -20,17 +20,12 @@ create table if not exists credential
   id bigint default nextval('credential_id_seq'::regclass) not null
     constraint credential_pkey
       primary key,
-  stack_id bigint
-    constraint fk_stackidincredential
-      references stack,
+  name varchar(255),
   attributes text
 );
 
 create unique index if not exists credential_id_idx
   on credential (id);
-
-create index if not exists credential_stack_id
-  on credential (stack_id);
 
 -- //@UNDO
 

@@ -1,16 +1,19 @@
 package com.sequenceiq.freeipa.service;
 
+import java.util.concurrent.ExecutorService;
+
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.sequenceiq.cloudbreak.cloud.event.platform.GetPlatformTemplateRequest;
 import com.sequenceiq.freeipa.api.model.create.CreateFreeIpaRequest;
 import com.sequenceiq.freeipa.converter.CreateFreeIpaRequestToStackConverter;
+import com.sequenceiq.freeipa.converter.cloud.CredentialToCloudCredentialConverter;
+import com.sequenceiq.freeipa.entity.SecurityConfig;
 import com.sequenceiq.freeipa.entity.Stack;
-import com.sequenceiq.freeipa.repository.InstanceMetaDataRepository;
-import com.sequenceiq.freeipa.repository.SaltSecurityConfigRepository;
-import com.sequenceiq.freeipa.repository.SecurityConfigRepository;
-import com.sequenceiq.freeipa.repository.StackAuthenticationRepository;
 import com.sequenceiq.freeipa.repository.StackRepository;
 
 import reactor.bus.EventBus;
@@ -18,11 +21,16 @@ import reactor.bus.EventBus;
 @Service
 public class StackCreationService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StackCreationService.class);
+
     @Inject
     private EventBus eventBus;
 
     @Inject
-    private UserDataBuilder userDataBuilder;
+    private CredentialToCloudCredentialConverter credentialConverter;
+
+    @Inject
+    private ExecutorService executorService;
 
     @Inject
     private TlsSecurityService tlsSecurityService;
@@ -31,22 +39,20 @@ public class StackCreationService {
     private StackRepository stackRepository;
 
     @Inject
-    private SecurityConfigRepository securityConfigRepository;
-
-    @Inject
-    private SaltSecurityConfigRepository saltSecurityConfigRepository;
-
-    @Inject
-    private StackAuthenticationRepository stackAuthenticationRepository;
-
-    @Inject
-    private InstanceMetaDataRepository instanceMetaDataRepository;
-
-    @Inject
     private CreateFreeIpaRequestToStackConverter stackConverter;
+
+    @Inject
+    private StackTemplateService templateService;
 
     public void launchStack(CreateFreeIpaRequest request) {
         Stack stack = stackConverter.convert(request);
+        GetPlatformTemplateRequest getPlatformTemplateRequest = templateService.triggerGetTemplate(stack);
+
+        SecurityConfig securityConfig = tlsSecurityService.generateSecurityKeys();
+        stack.setSecurityConfig(securityConfig);
+
+        String template = templateService.waitGetTemplate(stack, getPlatformTemplateRequest);
+        stack.setTemplate(template);
         stackRepository.save(stack);
         /*saveInstanceMetadata(stack);
         Location location = Location.location(Region.region(request.getRegion()), AvailabilityZone.availabilityZone(request.getAvailabilityZone()));

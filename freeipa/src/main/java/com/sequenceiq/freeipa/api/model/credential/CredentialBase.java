@@ -1,7 +1,7 @@
 package com.sequenceiq.freeipa.api.model.credential;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sequenceiq.freeipa.api.model.Secret;
+import com.sequenceiq.cloudbreak.domain.Secret;
 
 import io.swagger.annotations.ApiModel;
 

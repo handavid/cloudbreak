@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 
 import com.sequenceiq.freeipa.entity.json.Json;
@@ -27,9 +26,6 @@ public class Network {
     @Convert(converter = JsonToString.class)
     @Column(columnDefinition = "TEXT")
     private Json attributes;
-
-    @OneToOne
-    private Stack stack;
 
     public Long getId() {
         return id;
@@ -65,13 +61,5 @@ public class Network {
 
     public String getCloudPlatform() {
         return cloudPlatform;
-    }
-
-    public Stack getStack() {
-        return stack;
-    }
-
-    public void setStack(Stack stack) {
-        this.stack = stack;
     }
 }

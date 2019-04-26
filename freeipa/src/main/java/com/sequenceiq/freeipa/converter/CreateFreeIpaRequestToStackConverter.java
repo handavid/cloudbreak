@@ -29,6 +29,7 @@ import com.sequenceiq.cloudbreak.cloud.model.StackTags;
 import com.sequenceiq.freeipa.api.model.create.CreateFreeIpaRequest;
 import com.sequenceiq.freeipa.controller.exception.BadRequestException;
 import com.sequenceiq.freeipa.converter.authentication.StackAuthenticationV4RequestToStackAuthenticationConverter;
+import com.sequenceiq.freeipa.converter.credential.CredentialV4RequestToCredentialConverter;
 import com.sequenceiq.freeipa.converter.instance.InstanceGroupV4RequestToInstanceGroupConverter;
 import com.sequenceiq.freeipa.converter.network.NetworkV4RequestToNetworkConverter;
 import com.sequenceiq.freeipa.entity.InstanceGroup;
@@ -54,6 +55,9 @@ public class CreateFreeIpaRequestToStackConverter implements Converter<CreateFre
     @Inject
     private NetworkV4RequestToNetworkConverter networkConverter;
 
+    @Inject
+    private CredentialV4RequestToCredentialConverter credentialConverter;
+
     @Value("${cb.platform.default.regions:}")
     private String defaultRegions;
 
@@ -72,6 +76,8 @@ public class CreateFreeIpaRequestToStackConverter implements Converter<CreateFre
             source.getNetwork().setCloudPlatform(source.getCloudPlatform());
             stack.setNetwork(networkConverter.convert(source.getNetwork()));
         }
+        stack.setCredential(credentialConverter.convert(source.getCredential()));
+        stack.setOwner(source.getOwner());
         return stack;
     }
 

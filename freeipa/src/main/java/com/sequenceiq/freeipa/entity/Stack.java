@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,7 +43,7 @@ public class Stack {
     @OneToMany(mappedBy = "stack", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<InstanceGroup> instanceGroups = new HashSet<>();
 
-    @OneToOne(mappedBy = "stack", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private SecurityConfig securityConfig;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -56,14 +55,18 @@ public class Stack {
     @Column(columnDefinition = "TEXT")
     private Json tags;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false)
     private Credential credential;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL}, optional = false)
     private Network network;
 
     @OneToOne(cascade = CascadeType.ALL)
     private StackStatus stackStatus;
+
+    private String template;
+
+    private String owner;
 
     public Long getId() {
         return id;
@@ -191,5 +194,21 @@ public class Stack {
 
     public void setStackStatus(StackStatus stackStatus) {
         this.stackStatus = stackStatus;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
     }
 }

@@ -27,11 +27,22 @@ create table stack
   platformvariant text,
   availabilityzone text,
   cloudplatform varchar(255),
+  owner varchar(255),
   gatewayport integer default 9443,
   stackauthentication_id bigint
     constraint fk_stack_stackauthentication_id
       references stackauthentication,
+  network_id bigint
+    constraint fk_stack_network_id
+      references network,
+  credential_id bigint
+    constraint fk_stack_credential_id
+      references credential,
+  securityconfig_id bigint
+    constraint fk_stack_securityconfig_id
+      references securityconfig,
   tags text,
+  template text,
   stackstatus_id bigint
 );
 

@@ -20,20 +20,13 @@ create table if not exists network
   id bigint default nextval('network_id_seq'::regclass) not null
     constraint network_pkey
       primary key,
-  stack_id bigint
-    constraint fk_stackidinnetwork
-      references stack,
   name varchar(255),
-  owner varchar(255),
   attributes text,
   cloudplatform varchar(255)
 );
 
 create unique index network_id_idx
   on network (id);
-
-create index network_stack_idx
-  on network (stack_id);
 
 -- //@UNDO
 
