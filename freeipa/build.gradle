@@ -73,6 +73,7 @@ dependencies {
   implementation project(':cloud-reactor-api')
   implementation project(':cloud-reactor')
   implementation project(':orchestrator-api')
+  implementation project(':flow')
   runtime project(':orchestrator-salt')
   runtime project(':cloud-reactor')
   runtime project(':cloud-openstack')

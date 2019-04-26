@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import com.sequenceiq.freeipa.api.FreeIpaApi;
 import com.sequenceiq.freeipa.controller.CreateController;
+import com.sequenceiq.freeipa.controller.FlowTestController;
 import com.sequenceiq.freeipa.controller.mapper.DefaultExceptionMapper;
 import com.sequenceiq.freeipa.controller.mapper.WebApplicaitonExceptionMapper;
 
@@ -25,7 +26,7 @@ import io.swagger.jaxrs.config.SwaggerContextService;
 @Configuration
 public class EndpointConfig extends ResourceConfig {
 
-    private static final List<Class<?>> CONTROLLERS = List.of(CreateController.class);
+    private static final List<Class<?>> CONTROLLERS = List.of(CreateController.class, FlowTestController.class);
 
     private static final String VERSION_UNAVAILABLE = "unspecified";
 
