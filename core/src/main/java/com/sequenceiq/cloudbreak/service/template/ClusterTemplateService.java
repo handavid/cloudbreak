@@ -148,6 +148,11 @@ public class ClusterTemplateService extends AbstractWorkspaceAwareResourceServic
         return clusterTemplateRepository.findAllByNotDeletedInWorkspace(workspaceId);
     }
 
+    public Set<ClusterTemplate> getAllAvailableViewInWorkspace(Long workspaceId) {
+        User user = getLoggedInUser();
+        return clusterTemplateRepository.findAllByNotDeletedInWorkspace(workspaceId);
+    }
+
     public void updateDefaultClusterTemplates(long workspaceId) {
         CloudbreakUser cloudbreakUser = restRequestThreadLocalService.getCloudbreakUser();
         User user = userService.getOrCreate(cloudbreakUser);
