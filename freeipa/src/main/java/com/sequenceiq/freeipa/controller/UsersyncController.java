@@ -10,7 +10,7 @@ import com.sequenceiq.freeipa.api.model.users.SynchronizeUsersRequest;
 import com.sequenceiq.freeipa.api.model.users.SynchronizeUsersResponse;
 import com.sequenceiq.freeipa.api.model.users.SynchronizeUsersStatus;
 import com.sequenceiq.freeipa.api.model.users.UsersyncEndpoint;
-import com.sequenceiq.freeipa.service.user.UsersyncService;
+import com.sequenceiq.freeipa.service.user.UsersyncFlowService;
 
 @Controller
 public class UsersyncController implements UsersyncEndpoint {
@@ -18,13 +18,13 @@ public class UsersyncController implements UsersyncEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersyncController.class);
 
     @Inject
-    private UsersyncService usersyncService;
+    private UsersyncFlowService usersyncFlowService;
 
     @Override
     public SynchronizeUsersResponse synchronizeUsers(SynchronizeUsersRequest request) {
         LOGGER.info("synchronizeUsers()");
+        usersyncFlowService.synchronizeUsers(request);
         return new SynchronizeUsersResponse("Hello synchronizeUsers()!");
-
     }
 
     @Override

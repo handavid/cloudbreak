@@ -7,9 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.sequenceiq.cloudbreak.common.event.Selectable;
 import com.sequenceiq.cloudbreak.core.flow2.chain.FlowEventChainFactory;
-import com.sequenceiq.freeipa.flow.freeipa.provision.FreeIpaProvisionEvent;
 import com.sequenceiq.freeipa.flow.stack.StackEvent;
-import com.sequenceiq.freeipa.flow.stack.provision.StackProvisionEvent;
+import com.sequenceiq.freeipa.flow.usersync.UsersyncFlowEvent;
 
 @Component
 public class UsersyncFlowEventChainFactory implements FlowEventChainFactory<StackEvent> {
@@ -22,8 +21,7 @@ public class UsersyncFlowEventChainFactory implements FlowEventChainFactory<Stac
     public Queue<Selectable> createFlowTriggerEventQueue(StackEvent event) {
 
         Queue<Selectable> flowEventChain = new ConcurrentLinkedQueue<>();
-        flowEventChain.add(new StackEvent(StackProvisionEvent.START_CREATION_EVENT.event(), event.getStackId(), event.accepted()));
-        flowEventChain.add(new StackEvent(FreeIpaProvisionEvent.FREEIPA_PROVISION_EVENT.event(), event.getStackId()));
+        flowEventChain.add(new StackEvent(UsersyncFlowEvent.USERSYNC_START_EVENT.event(), event.getStackId(), event.accepted()));
         return flowEventChain;
     }
 }
