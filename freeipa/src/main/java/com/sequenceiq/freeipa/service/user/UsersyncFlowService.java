@@ -1,5 +1,6 @@
 package com.sequenceiq.freeipa.service.user;
 
+import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.Random;
 
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.sequenceiq.freeipa.api.model.users.SynchronizeUsersRequest;
 import com.sequenceiq.freeipa.entity.Stack;
 import com.sequenceiq.freeipa.flow.chain.FlowChainTriggers;
-import com.sequenceiq.freeipa.flow.stack.StackEvent;
+import com.sequenceiq.freeipa.flow.users.event.BaseSyncEvent;
 import com.sequenceiq.freeipa.repository.StackRepository;
 import com.sequenceiq.freeipa.service.FreeIpaFlowManager;
 
@@ -21,7 +22,7 @@ public class UsersyncFlowService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersyncFlowService.class);
 
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new SecureRandom();
 
     @Inject
     private StackRepository stackRepository;
@@ -45,11 +46,14 @@ public class UsersyncFlowService {
         // TODO save status to status repository
 
         // TODO add sync id to event
-        Long id = RANDOM.nextLong();
+        LOGGER.info("Random number {}", RANDOM.nextLong());
+//        Long id = RANDOM.nextLong();
+        Long id = 1L;
         // TODO figure out how events are accepted to ensure that we don't have any conflicts between the
         // sync id and stack id
+        BaseSyncEvent payload = new BaseSyncEvent(FlowChainTriggers.USERSYNC_TRIGGER_EVENT, id, id);
         flowManager.notify(FlowChainTriggers.USERSYNC_TRIGGER_EVENT,
-                new StackEvent(FlowChainTriggers.USERSYNC_TRIGGER_EVENT, id));
+                payload);
 //        new StackEvent(FlowChainTriggers.USERSYNC_TRIGGER_EVENT, stack.get().getId()));
 
         // TODO return sync id so it can be returned by API

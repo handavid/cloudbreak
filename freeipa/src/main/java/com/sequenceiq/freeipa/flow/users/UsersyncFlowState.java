@@ -1,4 +1,4 @@
-package com.sequenceiq.freeipa.flow.usersync;
+package com.sequenceiq.freeipa.flow.users;
 
 import com.sequenceiq.cloudbreak.core.flow2.FlowState;
 

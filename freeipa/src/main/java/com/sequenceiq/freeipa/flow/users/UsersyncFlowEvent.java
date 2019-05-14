@@ -1,9 +1,9 @@
-package com.sequenceiq.freeipa.flow.usersync;
+package com.sequenceiq.freeipa.flow.users;
 
 import com.sequenceiq.cloudbreak.core.flow2.FlowEvent;
 import com.sequenceiq.freeipa.flow.event.EventSelectorUtil;
-import com.sequenceiq.freeipa.flow.usersync.event.SyncUsersFailure;
-import com.sequenceiq.freeipa.flow.usersync.event.SyncUsersSuccess;
+import com.sequenceiq.freeipa.flow.users.event.SyncUsersFailure;
+import com.sequenceiq.freeipa.flow.users.event.SyncUsersSuccess;
 
 public enum UsersyncFlowEvent implements FlowEvent {
 

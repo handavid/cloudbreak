@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.sequenceiq.cloudbreak.common.event.Selectable;
 import com.sequenceiq.cloudbreak.core.flow2.chain.FlowEventChainFactory;
 import com.sequenceiq.freeipa.flow.stack.StackEvent;
-import com.sequenceiq.freeipa.flow.usersync.UsersyncFlowEvent;
+import com.sequenceiq.freeipa.flow.users.UsersyncFlowEvent;
 
 @Component
 public class UsersyncFlowEventChainFactory implements FlowEventChainFactory<StackEvent> {

@@ -1,13 +1,13 @@
-package com.sequenceiq.freeipa.flow.usersync;
+package com.sequenceiq.freeipa.flow.users;
 
-import static com.sequenceiq.freeipa.flow.usersync.UsersyncFlowEvent.USERSYNC_FAILED_EVENT;
-import static com.sequenceiq.freeipa.flow.usersync.UsersyncFlowEvent.USERSYNC_FAILURE_HANDLED_EVENT;
-import static com.sequenceiq.freeipa.flow.usersync.UsersyncFlowEvent.USERSYNC_FINISHED_EVENT;
-import static com.sequenceiq.freeipa.flow.usersync.UsersyncFlowEvent.USERSYNC_START_EVENT;
-import static com.sequenceiq.freeipa.flow.usersync.UsersyncFlowState.FINAL_STATE;
-import static com.sequenceiq.freeipa.flow.usersync.UsersyncFlowState.INIT_STATE;
-import static com.sequenceiq.freeipa.flow.usersync.UsersyncFlowState.SYNCING_USERS_STATE;
-import static com.sequenceiq.freeipa.flow.usersync.UsersyncFlowState.USERSYNC_FAILED_STATE;
+import static com.sequenceiq.freeipa.flow.users.UsersyncFlowEvent.USERSYNC_FAILED_EVENT;
+import static com.sequenceiq.freeipa.flow.users.UsersyncFlowEvent.USERSYNC_FAILURE_HANDLED_EVENT;
+import static com.sequenceiq.freeipa.flow.users.UsersyncFlowEvent.USERSYNC_FINISHED_EVENT;
+import static com.sequenceiq.freeipa.flow.users.UsersyncFlowEvent.USERSYNC_START_EVENT;
+import static com.sequenceiq.freeipa.flow.users.UsersyncFlowState.FINAL_STATE;
+import static com.sequenceiq.freeipa.flow.users.UsersyncFlowState.INIT_STATE;
+import static com.sequenceiq.freeipa.flow.users.UsersyncFlowState.SYNCING_USERS_STATE;
+import static com.sequenceiq.freeipa.flow.users.UsersyncFlowState.USERSYNC_FAILED_STATE;
 
 import java.util.List;
 

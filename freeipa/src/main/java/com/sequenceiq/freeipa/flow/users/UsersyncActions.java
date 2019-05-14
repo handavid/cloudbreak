@@ -1,4 +1,4 @@
-package com.sequenceiq.freeipa.flow.usersync;
+package com.sequenceiq.freeipa.flow.users;
 
 import java.util.Map;
 
@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.action.Action;
 
 import com.sequenceiq.cloudbreak.common.event.Selectable;
-import com.sequenceiq.freeipa.flow.stack.StackEvent;
-import com.sequenceiq.freeipa.flow.usersync.action.AbstractUsersyncAction;
-import com.sequenceiq.freeipa.flow.usersync.event.SyncUsersRequest;
+import com.sequenceiq.freeipa.flow.users.action.AbstractUsersyncAction;
+import com.sequenceiq.freeipa.flow.users.event.BaseSyncEvent;
+import com.sequenceiq.freeipa.flow.users.event.SyncUsersRequest;
 import com.sequenceiq.freeipa.service.stack.StackUpdater;
 
 @Configuration
@@ -27,10 +27,10 @@ public class UsersyncActions {
 
     @Bean(name = "SYNCING_USERS_STATE")
     public Action<?, ?> syncUsersAction() {
-        return new AbstractUsersyncAction<>(StackEvent.class) {
+        return new AbstractUsersyncAction<>(BaseSyncEvent.class) {
 
             @Override
-            protected void doExecute(UsersyncContext context, StackEvent payload, Map<Object, Object> variables) {
+            protected void doExecute(UsersyncContext context, BaseSyncEvent payload, Map<Object, Object> variables) {
                 LOGGER.info("UsersyncActions.doExecute() SYNCING_USERS_STATE");
                 // TODO store usersync state
 //                stackUpdater.updateStackStatus(context.getStack().getId(), DetailedStackStatus.BOOTSTRAPPING_MACHINES);
@@ -39,7 +39,7 @@ public class UsersyncActions {
 
             @Override
             protected Selectable createRequest(UsersyncContext context) {
-                return new SyncUsersRequest(context.getResourceId());
+                return new SyncUsersRequest(context.getStackId(), context.getSyncId());
             }
         };
     }
@@ -50,7 +50,7 @@ public class UsersyncActions {
 //
 //            @Override
 //            protected void doExecute(UsersyncContext context, StackFailureEvent payload, Map<Object, Object> variables) {
-//                // TODO store usersync state
+//                // TODO store users state
 ////                stackUpdater.updateStackStatus(context.getStack().getId(), DetailedStackStatus.PROVISION_FAILED);
 //                sendEvent(context);
 //            }
