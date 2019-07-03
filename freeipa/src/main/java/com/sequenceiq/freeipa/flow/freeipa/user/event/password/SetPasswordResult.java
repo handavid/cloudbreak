@@ -1,4 +1,6 @@
-package com.sequenceiq.freeipa.flow.freeipa.user.event;
+package com.sequenceiq.freeipa.flow.freeipa.user.event.password;
+
+import com.sequenceiq.freeipa.flow.freeipa.user.event.FreeIpaClientResult;
 
 public class SetPasswordResult extends FreeIpaClientResult<SetPasswordRequest> {
 

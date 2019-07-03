@@ -30,8 +30,8 @@ import com.sequenceiq.freeipa.service.freeipa.FreeIpaClientFactory;
 import com.sequenceiq.freeipa.service.freeipa.user.model.UsersState;
 import com.sequenceiq.freeipa.service.freeipa.user.model.UsersStateDifference;
 import com.sequenceiq.freeipa.service.stack.StackService;
-import com.sequenceiq.freeipa.service.user.model.SyncStatusDetail;
-import com.sequenceiq.freeipa.service.user.model.UmsState;
+import com.sequenceiq.freeipa.service.freeipa.user.model.SyncStatusDetail;
+import com.sequenceiq.freeipa.service.freeipa.user.model.UmsState;
 
 @Service
 public class UserService {
